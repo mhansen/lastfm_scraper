@@ -1,25 +1,19 @@
 #!/usr/bin/env python
 from datetime import datetime 
 import codecs
-import gflags
 import json
 import sys
 import time
 import urllib
 import urllib2
 
-# Flag parsing, using google's awesome flag library
-FLAGS = gflags.FLAGS
-gflags.DEFINE_string("user", "Mark_Hansen", "Last.FM username")
-try:
-    argv = FLAGS(sys.argv)
-except gflags.FlagsError, e:
-    print "%s\nUsage: %s\n%s" % (e, sys.argv[0], FLAGS)
+if len(sys.argv) < 2:
+    print "Usage: ./get_lastfm.py <username>"
     sys.exit(1)
 
-
+user = sys.argv[1]
 params = { "method":"user.getrecenttracks",
-           "user": FLAGS.user,
+           "user": user,
            "api_key": "b25b959554ed76058ac220b7b2e0a026",
            "format": "json",
            "limit": "200" }
@@ -55,7 +49,7 @@ for i in range(2, totalPages + 1):
     append_all_scrobbles_in_page(page)
 
 # dump it all to a json file, in case last.fm dies
-all_json_file = open("all_scrobbles." + FLAGS.user + ".json", 'w')
+all_json_file = open("all_scrobbles." + user + ".json", 'w')
 json.dump(scrobbles, all_json_file)
 all_json_file.close()
 
@@ -71,7 +65,7 @@ for scrobble in scrobbles:
 
 # print out the scrobbles in one file for each day
 for date in scrobbles_by_date:
-    f = codecs.open(date + "." + FLAGS.user + ".txt", 'w', 'utf8')
+    f = codecs.open(date + "." + user + ".txt", 'w', 'utf8')
     for scrobble in scrobbles_by_date[date]:
         d = datetime.fromtimestamp(float(scrobble["date"]["uts"]))
         artist = scrobble["artist"]["#text"]
