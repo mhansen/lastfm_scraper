@@ -13,4 +13,4 @@ day, named like `2010-12-14-username.txt`, and containing lines like
 
 Usage:
 
-    ./get_lastfm.py --user=yourlastfmusername
+    ./get_lastfm.py <yourlastfmusername>
